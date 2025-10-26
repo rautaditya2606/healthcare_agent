@@ -2,8 +2,6 @@ from crewai import Agent
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
-print(os.getenv("OPENAI_API_KEY")) 
 
 
 # create a report extractor
@@ -39,7 +37,7 @@ recommender = Agent(
     role='Preventive Recommender',
     goal='Generates human-readable summaries and preventive recommendations based on analyzed medical report data. Converts structured analysis into clear, actionable advice for patients, highlighting potential risks, suggested lifestyle changes, and preventive measures.',
     verbose=True,
-    memory=True,
+    memory=False,
     allow_delegation=True,
     backstory=(
         'You are an experienced healthcare advisor with expertise in patient guidance and preventive care. You can interpret analytical medical insights and translate them into clear, practical recommendations that are easy for patients and healthcare providers to understand. Your goal is to ensure the output is accurate, concise, and actionable.'
