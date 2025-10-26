@@ -1,48 +1,47 @@
 from crewai import Task
-from agents import extractor
-from tools import get_pdf_tool
+from agents import extractor, analyzer, recommender
 
 
 extract_task = Task(
     description=(
-        "Extract and structure medical information from the report. "
-        "Identify diseases, symptoms, and key metrics."
+        "Extract and structure medical information from the provided report text. "
+        "The report text is available in the 'report_text' input variable. "
+        "Identify and list all diseases, symptoms, and key metrics."
     ),
     expected_output=(
-        "A structured dictionary with 'diseases', 'symptoms', and 'metrics' keys. "
+        "A structured JSON object with these keys: "
+        "'diseases' (list), 'symptoms' (list), and 'metrics' (dict). "
         "Example: { 'diseases': ['Diabetes'], 'symptoms': ['fatigue'], "
-        "'metrics': {'blood_sugar': '180 mg/dL'} }"
+        "'metrics': {'blood_sugar': '180 mg/dL'}}"
     ),
-    tools=[],  
-    agent=extractor
+    agent=extractor,
+    context=[]  
 )
-from agents import analyzer
+
 
 analyze_task = Task(
     description=(
-        "Analyze the extracted data from the medical report using the medical knowledge base "
-        "or RAG tool to identify patterns, potential diagnoses, and relevant risk factors."
+        "Analyze the extracted medical data. The input will be the output from the extractor. "
+        "Focus on identifying patterns, potential diagnoses, and relevant risk factors."
     ),
     expected_output=(
-        "A structured analysis array with each disease and its risk status and notes. "
-        "Example: [ {'disease': 'Diabetes', 'status': 'High risk', 'notes': 'Blood sugar elevated'} ]"
+        "A structured analysis including potential diagnoses, risk factors, and key findings. "
+        "Format as a JSON object with 'diagnoses', 'risk_factors', and 'findings' keys."
     ),
-    tools=[], 
-    agent=analyzer
+    agent=analyzer,
+    context=[extract_task] 
 )
-from agents import recommender
+
 
 recommend_task = Task(
     description=(
-        "Generate human-readable summaries and preventive recommendations based on the analyzed data. "
-        "Include lifestyle, treatment, or monitoring suggestions."
+        "Generate clear, actionable recommendations based on the analysis. "
+        "The input will be the output from the analyzer."
     ),
     expected_output=(
-        "A list of actionable recommendations. "
-        "Example: [ 'Monitor blood sugar daily and maintain a balanced diet.', "
-        "'Engage in regular physical activity to manage blood pressure.' ]"
+        "A list of clear, actionable recommendations in order of priority. "
+        "Include both immediate and long-term suggestions."
     ),
-    tools=[], 
     agent=recommender,
-    output_file='recommendation.md'
+    context=[analyze_task] 
 )
