@@ -12,7 +12,7 @@ extract_task = Task(
         "A structured JSON object with these keys: "
         "'diseases' (list), 'symptoms' (list), and 'metrics' (dict). "
         "Example: { 'diseases': ['Diabetes'], 'symptoms': ['fatigue'], "
-        "'metrics': {'blood_sugar': '180 mg/dL'}}"
+        "'metrics': {'blood_sugar': '180 mg/dL'}"
     ),
     agent=extractor,
     context=[]  
